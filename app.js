@@ -25,8 +25,33 @@ function preload() {
   this.load.spritesheet('bird', 'assets/bird.png', { frameWidth: 64, frameHeight: 96 });
 }
 
+let bird;
+let hasLanded = false;
+
 function create() {
   const background = this.add.image(0, 0, 'background').setOrigin(0, 0);
+
+  const topColumns = this.physics.add.staticGroup({
+    key: 'column',
+    repeat: 1,
+    setXY: { x: 200, y: 0, stepX: 300 }
+  });
+
+  const bottomColumns = this.physics.add.staticGroup({
+    key: 'column',
+    repeat: 1,
+    setXY: { x: 350, y: 400, stepX: 300 },
+  });
+
+  bird = this.physics.add.sprite(0, 50, 'bird').setScale(2);
+  bird.setBounce(0.2);
+  bird.setCollideWorldBounds(true);
+
+  const roads = this.pythics.add.staticGroup();
+  const road = roads.create(400, 568, 'road').setScale(2).refreshBody();
+
+  this.physics.add.overlap(bird, road, () => hasLanded = true, null, this);
+  this.physics.add.collider(bird, road);
 }
 
 function update() {
